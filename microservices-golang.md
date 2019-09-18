@@ -1,6 +1,6 @@
 # ベンチーマーク
 
-go test -bench .
+go test -bench=.
 参考[go標準のbenchmark機能の使い方](https://qiita.com/marnie_ms4/items/7014563083ca1d824905)
 ```go
 func BenchmarkFunctionName(b *testing.B) {
@@ -11,3 +11,103 @@ func BenchmarkFunctionName(b *testing.B) {
 }
 ```
 
+# 各パッケージ内でファイルごとにメソッドを分ける
+
+パッケージ内でpackageName.A.method()という形でアクセスできるようにする。
+
+```go
+type A struct {}
+var (
+	a A
+)
+
+func (f *A) method() {}
+```
+
+# テストのisolationの確保に関して
+
+Aのパッケージを読み込むBを隔離してテストする(Unitテスト)
+
+Aパッケージ
+
+```go
+//A
+package Apackage
+
+var (
+	Aglob Ainterface
+)
+
+type Ainterface interface{
+	Amethod() int64
+}
+
+type A struct{}
+
+func (m *A) Amethod() int64 {
+	//something
+	return 1
+}
+
+func init() {
+	Aglob = &A
+}
+```
+
+Bパッケージ
+
+```go
+//B
+package Bpackage
+
+var Bglob B
+
+type B struct{}
+
+func (m *B) Bmethod() int64 {
+	return Apackage.Aglob.Amethod() //ApackageのAmethodを実行s
+	
+}
+
+```
+
+もし、BパッケージをUnitテストする場合、Aパッケージから隔離する。
+
+
+```go
+//B_test.go
+package Bpackage
+
+//Mock
+var(
+	mock AMock
+	getAmethod func() int64
+) 
+
+type AMock struct{}
+
+func (m *AMock) Amethod() int64{
+	return getAmethod()
+}
+
+func init(){
+	Apackage.Agolb = &AMock
+}
+
+//Test
+func TestBpackage(){
+	getAmethod = func(){
+		return 2
+	}
+	//test... Bglob.Bmethod内で呼び出されるAmethodの返り値が2になる。
+
+}
+```
+
+# パッケージを調べる
+
+例えば、ginのNewを調べる場合、
+
+```
+go doc github.com/gin-gonic/gin New
+```
