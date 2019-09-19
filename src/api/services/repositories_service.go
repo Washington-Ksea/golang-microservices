@@ -20,7 +20,7 @@ func init() {
 }
 
 type reposServiceInterface interface {
-	CreateRepo(request repositories.CreateRepoRequest) (*repositories.CreateRepoRequest, errors.ApiError)
+	CreateRepo(request repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError)
 }
 
 type reposService struct{}

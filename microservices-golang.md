@@ -111,3 +111,15 @@ func TestBpackage(){
 ```
 go doc github.com/gin-gonic/gin New
 ```
+
+# Testの初期化
+
+下記の関するを各テストファイルに記載することで、各テスト関数に共通して実行されるメソッドを記載できる。
+
+```go
+func TestMain(m *testing.M) {
+	//Before method
+	os.Exit(m.Run())
+	//After method
+}
+```

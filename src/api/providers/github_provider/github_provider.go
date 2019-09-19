@@ -35,6 +35,7 @@ func CreateRepo(accessToken string, request github.CreateRepoRequest) (*github.C
 	}
 
 	bytes, err := ioutil.ReadAll(response.Body)
+	log.Println("##", response, err, string(bytes))
 	if err != nil {
 		return nil, &github.GithubErrorResponse{StatusCode: http.StatusInternalServerError, Message: "invalid response body"}
 	}

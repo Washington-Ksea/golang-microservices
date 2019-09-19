@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"log"
+	"os"
+)
 
 const (
 	apiGithubAccessToken = "SECRET_GITHUB_ACCESS_TOKEN"
@@ -11,5 +14,6 @@ var (
 )
 
 func GetGithubAccessToken() string {
+	log.Println("##", githubAccessToken)
 	return githubAccessToken
 }

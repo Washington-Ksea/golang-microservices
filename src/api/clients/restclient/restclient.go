@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -62,6 +63,7 @@ func Post(url string, body interface{}, headers http.Header) (*http.Response, er
 
 	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonBytes))
 	request.Header = headers
+	log.Println("##req", request.Header, request.Body)
 
 	client := http.Client{}
 	return client.Do(request)

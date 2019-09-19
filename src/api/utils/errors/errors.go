@@ -1,6 +1,10 @@
 package errors
 
-import "net/http"
+import (
+	"encoding/json"
+	"errors"
+	"net/http"
+)
 
 type ApiError interface {
 	Status() int
@@ -9,42 +13,50 @@ type ApiError interface {
 }
 
 type apiError struct {
-	status  int    `json:"status"`
-	message string `json:"message"`
-	error   string `json:"error, omitempty"`
+	AStatus  int    `json:"status"`
+	AMessage string `json:"message"`
+	AError   string `json:"error,omitempty"`
 }
 
 func (e *apiError) Status() int {
-	return e.status
+	return e.AStatus
 }
 
 func (e *apiError) Message() string {
-	return e.message
+	return e.AMessage
 }
 
 func (e *apiError) Error() string {
-	return e.error
+	return e.AError
+}
+
+func NewApiErrFromBytes(body []byte) (ApiError, error) {
+	var result apiError
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, errors.New("invalid json body")
+	}
+	return &result, nil
 }
 
 func NewApiError(statusCode int, message string) ApiError {
-	return &apiError{status: statusCode, message: message}
+	return &apiError{AStatus: statusCode, AMessage: message}
 }
 
 func NewNotFoundApiError(message string) ApiError {
 	return &apiError{
-		status:  http.StatusNotFound,
-		message: message,
+		AStatus:  http.StatusNotFound,
+		AMessage: message,
 	}
 }
 func NewInternalServerError(message string) ApiError {
 	return &apiError{
-		status:  http.StatusInternalServerError,
-		message: message,
+		AStatus:  http.StatusInternalServerError,
+		AMessage: message,
 	}
 }
 func NewBadRequestError(message string) ApiError {
 	return &apiError{
-		status:  http.StatusBadRequest,
-		message: message,
+		AStatus:  http.StatusBadRequest,
+		AMessage: message,
 	}
 }
