@@ -2,7 +2,6 @@ package github
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,9 +18,25 @@ func TestCreateRepoRequestAsJson(t *testing.T) {
 		HasWiki:     false,
 	}
 
+	if request.Private {
+
+	}
+
 	bytes, err := json.Marshal(request)
 	assert.Nil(t, err)
 	assert.NotNil(t, bytes)
 
-	fmt.Println(string(bytes))
+	var target CreateRepoRequest
+	err = json.Unmarshal(bytes, &target)
+	assert.Nil(t, err)
+
+	assert.EqualValues(t, target.Name, request.Name)
+	assert.EqualValues(t, target.HasIssues, request.HasIssues)
+	/*
+		fmt.Println(string(bytes))
+
+		assert.EqualValues(t,
+			`{"Name":"golang introduction","Description":"a golang intoroduction repository","Homepage":"https://github.com","Private":true,"HasIssues":false,"HasProjects":true,"HasWiki":false}`,
+			string(bytes))
+	*/
 }
