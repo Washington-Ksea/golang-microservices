@@ -4,7 +4,7 @@ type GithubErrorResponse struct {
 	StatusCode    int           `json:"status_code"`
 	Message       string        `json:"message"`
 	Documentation string        `json:"documentation_url"`
-	Errors        []GithubError `json:"message"`
+	Errors        []GithubError `json:"errors"`
 }
 
 type GithubError struct {
