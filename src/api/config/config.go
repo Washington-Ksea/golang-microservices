@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 )
 
@@ -14,6 +13,5 @@ var (
 )
 
 func GetGithubAccessToken() string {
-	log.Println("##", githubAccessToken)
 	return githubAccessToken
 }

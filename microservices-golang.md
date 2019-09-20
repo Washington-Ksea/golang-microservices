@@ -123,3 +123,31 @@ func TestMain(m *testing.M) {
 	//After method
 }
 ```
+
+# limit concurrency
+
+go runtimeの数を制限する。また、すべての処理完了までプログラム終了を待つ。
+競合状態の処理(Mutex)
+
+```go
+
+limitN = make(chan int, 5)
+var wg sync.WaitGroup
+var lock sync.Mutex
+
+for i:=0; i< 100; i++ {
+	c <- true
+	wg.Add(1)
+	go func (c chan int, wg *sync.WaitGroup){
+		lock.Lock()
+		defer lock.Unlock()
+		//something doing
+		defer wg.Done()
+		<-c
+	}(limitN, wg)
+}
+
+wg.Wait()
+
+
+```
